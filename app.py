@@ -1,31 +1,75 @@
 import streamlit as st
-import pandas as pd
 import datetime
-import os
 
 # Page Configurations
 st.set_page_config(page_title="Precision CDSS Pro v3.0", layout="wide")
 
-st.title("🛡️ Enterprise-Grade Precision Antimicrobial Stewardship CDSS")
+st.markdown('<h1 style="color:#1E3A8A;">🛡️ Enterprise-Grade Precision Antimicrobial Stewardship CDSS</h1>', unsafe_allow_html=True)
 st.caption("Developed by: MAYANK VIRMANI (PharmD Scholar) | Multi-Drug Combination Logic Framework")
 
-# 1. Load the 50+ Drugs Database safely
+# 50+ CLINICAL ANTIMICROBIAL FORMULARY EMBEDDED IN CODE (NO EXTERNAL FILE NEEDED)
 @st.cache_data
-def load_database():
-    # If file exists, load it, else create a minimal temporary version to avoid error
-    if os.path.exists("drugs_database.csv"):
-        return pd.read_csv("drugs_database.csv")
-    else:
-        st.error("🚨 'drugs_database.csv' file missing in folder! Please create it to access 50+ drugs.")
-        return pd.DataFrame(columns=["Drug_Name", "Class", "Standard_Route", "Max_Daily_Dose", "Renal_Threshold_CrCl", "Dosing_Guideline_Note"])
+def get_embedded_db():
+    return {
+        "Ceftazidime-Avibactam": {"class": "Beta-Lactam/BLI (Recent)", "max_dose": "7.5 g/day", "thresh": 50, "note": "Highly dynamic renal scaling required for CRE coverage."},
+        "Meropenem-Vaborbactam": {"class": "Beta-Lactam/BLI (Recent)", "max_dose": "12 g/day", "thresh": 40, "note": "Reduce dose if CrCl < 40 ml/min."},
+        "Imipenem-Cilastatin-Relebactam": {"class": "Beta-Lactam/BLI (Recent)", "max_dose": "5 g/day", "thresh": 90, "note": "Requires precise renal tracking from CrCl 15 to 90."},
+        "Ceftolozane-Tazobactam": {"class": "Beta-Lactam/BLI (Recent)", "max_dose": "4.5 g/day", "thresh": 50, "note": "Adjust for renal clearance; essential for MDR Pseudomonas."},
+        "Piperacillin-Tazobactam": {"class": "Beta-Lactam/BLI", "max_dose": "16 g/day", "thresh": 40, "note": "Reduce dose to 2.25g q6h or q8h if CrCl < 20."},
+        "Meropenem": {"class": "Carbapenem", "max_dose": "6 g/day", "thresh": 50, "note": "ICU Sepsis default. Reduce to 1g q12h if CrCl 25-50."},
+        "Imipenem": {"class": "Carbapenem", "max_dose": "4 g/day", "thresh": 70, "note": "High dose in renal failure risks CNS toxicity/seizures."},
+        "Ertapenem": {"class": "Carbapenem", "max_dose": "1 g/day", "thresh": 30, "note": "Once daily dosing. Reduce to 500mg if CrCl < 30."},
+        "Doripenem": {"class": "Carbapenem", "max_dose": "3 g/day", "thresh": 50, "note": "Reduce to 250mg q8h if CrCl 30-50."},
+        "Amikacin": {"class": "Aminoglycoside", "max_dose": "15 mg/kg/day", "thresh": 30, "note": "Prolong interval to q48h if CrCl < 30. Check TDM troughs."},
+        "Gentamicin": {"class": "Aminoglycoside", "max_dose": "5 mg/kg/day", "thresh": 30, "note": "Prolong interval to q36h or q48h if CrCl < 30."},
+        "Tobramycin": {"class": "Aminoglycoside", "max_dose": "5 mg/kg/day", "thresh": 30, "note": "Requires aggressive TDM. High nephrotoxicity risk."},
+        "Plazomicin": {"class": "Aminoglycoside (Recent)", "max_dose": "15 mg/kg/day", "thresh": 60, "note": "Next-gen aminoglycoside. Reduce dose if CrCl < 60."},
+        "Vancomycin": {"class": "Glycopeptide", "max_dose": "4 g/day", "thresh": 50, "note": "Mandatory AUC/MIC TDM. Target trough 15-20 mcg/mL in severe infections."},
+        "Teicoplanin": {"class": "Glycopeptide", "max_dose": "12 mg/kg/q12h", "thresh": 40, "note": "Maintenance dose cut by 50% after day 4 if renal crash."},
+        "Telavancin": {"class": "Glycopeptide", "max_dose": "10 mg/kg/day", "thresh": 50, "note": "Black box warning for nephrotoxicity. Avoid if possible."},
+        "Dalbavancin": {"class": "Glycopeptide", "max_dose": "1500 mg/dose", "thresh": 30, "note": "Single or two-dose long acting regimen. Reduce dose by 25% if CrCl < 30."},
+        "Oritavancin": {"class": "Glycopeptide", "max_dose": "1200 mg/dose", "thresh": 0, "note": "Single dose regimen. No adjustment for mild/moderate renal impairment."},
+        "Linezolid": {"class": "Oxazolidinone", "max_dose": "1200 mg/day", "thresh": 0, "note": "No renal adjustment. Monitor CBC for thrombocytopenia if >14 days."},
+        "Tedizolid": {"class": "Oxazolidinone", "max_dose": "200 mg/day", "thresh": 0, "note": "Once daily. No renal or hepatic adjustment required."},
+        "Daptomycin": {"class": "Lipopeptide", "max_dose": "12 mg/kg/day", "thresh": 30, "note": "Monitor CPK levels weekly. Prolong interval to q48h if CrCl < 30."},
+        "Colistin": {"class": "Polymyxin", "max_dose": "300 mg CBA/day", "thresh": 80, "note": "Highly nephrotoxic. Requires strict loading dose and modified maintenance."},
+        "Polymyxin B": {"class": "Polymyxin", "max_dose": "25000 units/kg/day", "thresh": 0, "note": "Cleared non-renally. Preferred over Colistin to avoid AKI."},
+        "Ceftriaxone": {"class": "Cephalosporin", "max_dose": "4 g/day", "thresh": 10, "note": "No routine renal adjustment needed until severe end-stage."},
+        "Ceftazidime": {"class": "Cephalosporin", "max_dose": "6 g/day", "thresh": 50, "note": "Reduce dose significantly if CrCl < 50 to avoid neurotoxicity."},
+        "Cefepime": {"class": "Cephalosporin", "max_dose": "6 g/day", "thresh": 60, "note": "High risk of Cefepime-induced encephalopathy if non-adjusted."},
+        "Ceftaroline": {"class": "Cephalosporin", "max_dose": "1200 mg/day", "thresh": 50, "note": "MRSA active cephalosporin. Reduce dose if CrCl < 50."},
+        "Cefiderocol": {"class": "Cephalosporin", "max_dose": "6 g/day", "thresh": 60, "note": "Siderophore mechanism. Adjust for augmented renal clearance too."},
+        "Voriconazole": {"class": "Triazole Antifungal", "max_dose": "8 mg/kg/q12h", "thresh": 50, "note": "IV vehicle (SBECD) accumulates if CrCl < 50. Switch to Oral PO."},
+        "Isavuconazole": {"class": "Triazole Antifungal", "max_dose": "200 mg/q8h", "thresh": 0, "note": "No renal adjustment. Predictable kinetics."},
+        "Posaconazole": {"class": "Triazole Antifungal", "max_dose": "600 mg/day", "thresh": 50, "note": "IV vehicle accumulates if CrCl < 50. Switch to Oral tablets."},
+        "Fluconazole": {"class": "Triazole Antifungal", "max_dose": "800 mg/day", "thresh": 50, "note": "Reduce maintenance dose by 50% if CrCl < 50."},
+        "Liposomal Amphotericin B": {"class": "Polyene Antifungal", "max_dose": "5 mg/kg/day", "thresh": 0, "note": "Significantly lower nephrotoxicity than deoxycholate."},
+        "Caspofungin": {"class": "Echinocandin", "max_dose": "70 mg/day", "thresh": 0, "note": "Reduce dose to 35mg if moderate/severe hepatic impairment exists."},
+        "Micafungin": {"class": "Echinocandin", "max_dose": "150 mg/day", "thresh": 0, "note": "Metabolized hepatically. No adjustment required for renal clearance."},
+        "Anidulafungin": {"class": "Echinocandin", "max_dose": "100 mg/day", "thresh": 0, "note": "Spontaneous degradation. Safest antifungal in renal failure."},
+        "Ciprofloxacin": {"class": "Fluoroquinolone", "max_dose": "1200 mg/day", "thresh": 30, "note": "Reduce PO/IV dose by 50% if CrCl < 30. Cation chelation risk."},
+        "Levofloxacin": {"class": "Fluoroquinolone", "max_dose": "750 mg/day", "thresh": 50, "note": "Requires major adjustments. e.g. 750mg q48h if CrCl < 20."},
+        "Moxifloxacin": {"class": "Fluoroquinolone", "max_dose": "400 mg/day", "thresh": 0, "note": "Hepatically cleared. No renal adjustment required."},
+        "Tigecycline": {"class": "Tetracycline", "max_dose": "100 mg/day", "thresh": 0, "note": "Broad spectrum but black box warning for increased mortality."},
+        "Eravacycline": {"class": "Tetracycline", "max_dose": "2 mg/kg/day", "thresh": 0, "note": "Next-gen tetracycline for cIAI. No renal adjustments."},
+        "Omadacycline": {"class": "Tetracycline", "max_dose": "100 mg/day", "thresh": 0, "note": "No renal adjustment needed for CABP or ABSSSI."},
+        "Azithromycin": {"class": "Macrolide", "max_dose": "500 mg/day", "thresh": 0, "note": "Hepatic elimination. No renal adjustments required."},
+        "Clarithromycin": {"class": "Macrolide", "max_dose": "1000 mg/day", "thresh": 30, "note": "Reduce dose by 50% if CrCl < 30."},
+        "Clindamycin": {"class": "Lincosamide", "max_dose": "2700 mg/day", "thresh": 0, "note": "Excellent tissue penetration. No renal dose changes needed."},
+        "Metronidazole": {"class": "Nitroimidazole", "max_dose": "1500 mg/day", "thresh": 10, "note": "Anaerobic target default. Minimal renal adjustment required."},
+        "Fosfomycin": {"class": "Phosphonic Acid", "max_dose": "24 g/day", "thresh": 40, "note": "IV formulation requires massive dose restructuring in renal failure."},
+        "Nitrofurantoin": {"class": "Nitrofuran", "max_dose": "400 mg/day", "thresh": 30, "note": "Contraindicated if CrCl < 30 due to lack of therapeutic urinary concentration."},
+        "Trimethoprim-Sulfamethoxazole": {"class": "Sulfonamide", "max_dose": "20 mg/kg/day", "thresh": 30, "note": "Reduce dose by 50% if CrCl 15-30. High hyperkalemia risk."},
+        "Aztreonam": {"class": "Monobactam", "max_dose": "8 g/day", "thresh": 30, "note": "Safe for penicillin allergic patients. Reduce dose by 50% if CrCl < 30."},
+        "Luluiconazole": {"class": "Imidazole Topical", "max_dose": "Topical application bound", "thresh": 0, "note": "No systemic dosage adjustment required due to negligible absorption."}
+    }
 
-df_drugs = load_database()
+db = get_embedded_db()
 
-# Demographics Layout
+# Patient Metrics Setup
 col1, col2 = st.columns(2)
-
 with col1:
-    st.header("🏥 Patient Demographics & Physiometrics")
+    st.header("🏥 Patient Demographics")
     clinical_setting = st.selectbox("Clinical Environment:", ["ICU (Intensive Care)", "Medical Wards (IPD)", "OPD (Outpatient)"])
     gender = st.selectbox("Biological Sex:", ["Male", "Female"])
     age = st.number_input("Age (Years):", min_value=1, max_value=110, value=65)
@@ -33,124 +77,12 @@ with col1:
     weight_kg = st.number_input("Weight (kg):", min_value=5, max_value=250, value=85)
     scr = st.number_input("Serum Creatinine (mg/dL):", min_value=0.2, max_value=10.0, value=1.6)
 
-    # Dosing Weight Adjustment (Obesity Pharmacokinetics)
+    # Ideal Body Weight and Dosing Weight calculations
     height_in = height_cm / 2.54
-    if height_in > 60:
-        ibw = (50.0 if gender == "Male" else 45.5) + 2.3 * (height_in - 60)
-    else:
-        ibw = 50.0 if gender == "Male" else 45.5
-
-    if weight_kg > (1.3 * ibw):
-        dosing_weight = ibw + 0.4 * (weight_kg - ibw)
-        weight_note = "Adjusted Body Weight (Obesity Protocol)"
-    else:
-        dosing_weight = weight_kg
-        weight_note = "Total Body Weight"
-
-    # Cockcroft-Gault Equation
-    cr_cl = ((140 - age) * dosing_weight) / (72 * scr)
-    if gender == "Female":
-        cr_cl *= 0.85
-    cr_cl = round(cr_cl, 2)
-    st.info(f"💡 **Calculated Clearance (CrCl):** {cr_cl} mL/min ({weight_note})")
+    ibw = (50.0 if gender == "Male" else 45.5) + (2.3 * (height_in - 60) if height_in > 60 else 0)
+    dosing_weight = ibw + 0.4 * (weight_kg - ibw) if weight_kg > (1.3 * ibw) else weight_kg
+    cr_cl = round((((140 - age) * dosing_weight) / (72 * scr)) * (0.85 if gender == "Female" else 1.0), 2)
+    st.info(f"💡 **Calculated Clearance (CrCl):** {cr_cl} mL/min")
 
 with col2:
-    st.header("🧬 Immunological & Pharmacogenomics Markers")
-    allergy_list = st.multiselect("Active Drug Allergies:", ["None", "Penicillins", "Aminoglycosides", "Fluoroquinolones", "Glycopeptides"])
-    
-    pgx_profile = st.selectbox("Genetic Profile Verification:", [
-        "No Data (Use South Asian Population Probability Risk Model)",
-        "CYP2C19 Normal Metabolizer (*1/*1)",
-        "CYP2C19 Ultra-Rapid Metabolizer (*17/*17)",
-        "CYP2C19 Poor Metabolizer (*2/*2)",
-        "MT-RNR1 m.1555A>G Mutation"
-    ])
-
-# Combination Order Entry Setup
-st.markdown("---")
-st.header("💊 Multi-Drug Combination Stewardship Interface")
-st.markdown("*Select up to two agents to run real-world combination therapy evaluation protocols:*")
-
-col_d1, col_d2, col_route = st.columns(3)
-
-if not df_drugs.empty:
-    drug_options = sorted(df_drugs["Drug_Name"].tolist())
-else:
-    drug_options = ["Database File Missing"]
-
-with col_d1:
-    primary_drug = st.selectbox("Select Primary Antimicrobial (Core Target):", drug_options)
-with col_d2:
-    adjunct_drug = st.selectbox("Select Adjunct Antimicrobial (Combination Therapy):", ["None"] + drug_options)
-with col_route:
-    prescribed_route = st.selectbox("Prescribed Route of Administration:", ["IV (Intravenous)", "Oral (PO)", "Topical"])
-
-# Cross-Check Processing Engine
-if st.button("⚡ Run High-Fidelity Multi-Drug Cross-Check"):
-    st.markdown("---")
-    st.subheader("📋 Precision Pharmacology & Stewardship Validation Report")
-    st.caption(f"Generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | Verification Base: CPIC 2024 / IDSA ICU Guidelines")
-
-    selected_agents = [primary_drug]
-    if adjunct_drug != "None":
-        selected_agents.append(adjunct_drug)
-        st.info(f"🔍 **Evaluating Combination Regimen:** {primary_drug} **+** {adjunct_drug}")
-
-    allergy_string = " ".join(allergy_list)
-    reject_flag = False
-
-    # Dynamic Evaluation for each selected drug in the regimen
-    for drug in selected_agents:
-        if drug == "None" or df_drugs.empty:
-            continue
-            
-        # Extract drug profile metadata from database
-        drug_meta = df_drugs[df_drugs["Drug_Name"] == drug].iloc[0]
-        d_class = drug_meta["Class"]
-        d_max = drug_meta["Max_Daily_Dose"]
-        d_thresh = drug_meta["Renal_Threshold_CrCl"]
-        d_note = drug_meta["Dosing_Guideline_Note"]
-
-        st.markdown(f"### 📦 Evaluation Profile: {drug} ({d_class})")
-
-        # 1. Allergy Validation Layer
-        if d_class in allergy_string or (d_class == "Aminoglycoside (Recent)" and "Aminoglycosides" in allergy_string):
-            st.error(f"❌ **IMMUNOLOGICAL LOCKOUT:** Patient has a registered allergy to the {d_class} group. Prescription of {drug} is rejected.")
-            reject_flag = True
-        
-        # 2. Pharmacokinetics & Renal Boundary Validation
-        if cr_cl < d_thresh:
-            st.warning(f"⚠️ **RENAL MISMATCH TRIGGERED:** Patient's CrCl ({cr_cl} mL/min) is below the safety threshold ({d_thresh} mL/min) for standard {drug} dosing.")
-            st.markdown(f"* **Guideline Action Item:** {d_note}")
-        else:
-            st.success(f"✅ **Renal Clearance Valid:** Standard physiological pathway clear for {drug} (Max safe window: {d_max}).")
-
-        # 3. Pharmacogenomics (PGx) Interlocking Logic
-        if "MT-RNR1" in pgx_profile and d_class in ["Aminoglycoside", "Aminoglycoside (Recent)"]:
-            st.error(f"❌ **CRITICAL HARD STOP (PGx):** MT-RNR1 mutation identified! Absolute penetrance risk for irreversible ototoxicity. **AVOID {drug}**.")
-            reject_flag = True
-            if "ICU" in clinical_setting:
-                st.success("🔄 **Smart Stewardship Suggestion:** Pivot immediately to **Meropenem IV** for Gram-negative tracking.")
-            else:
-                st.success("🔄 **Smart Stewardship Suggestion:** Pivot to **Ceftazidime IV**.")
-
-        elif "Ultra-Rapid" in pgx_profile and drug == "Voriconazole":
-            st.error(f"❌ **THERAPEUTIC FAILURE RISK (PGx):** Patient clears Voriconazole hyper-rapidly via CYP2C19 *17.")
-            st.success("🔄 **Dynamic Alternative Recommendation:** High-end substitution required. Switch to **Isavuconazole** or **Liposomal Amphotericin B IV**.")
-            reject_flag = True
-
-        elif "Poor Metabolizer" in pgx_profile and drug == "Voriconazole":
-            st.warning(f"⚠️ **TOXIC ACCUMULATION RISK (PGx):** CYP2C19 Poor metabolizer status will drive extreme serum concentrations.")
-            st.markdown("* **Adjustment:** Cut standard maintenance dosing matrix by 50% or substitute with **Anidulafungin IV**.")
-
-    # Route Efficiency Audit for ICU Status
-    if "ICU" in clinical_setting and prescribed_route == "Oral (PO)":
-        st.warning("⚠️ **ROUTE BIOAVAILABILITY AUDIT:** Oral routes in hypermetabolic ICU shock states risk sub-therapeutic exposure due to gastric hypoperfusion. Transition combination to Intravenous (IV) status.")
-
-    # Final Clinical Disposition Output Stamp
-    st.markdown("---")
-    if reject_flag:
-        st.markdown("<h3 style='color:#DC2626;'>⛔ REGIMEN DISPOSITION: REJECTED / PROTOCOL BLOCKED</h3>", unsafe_allow_html=True)
-    else:
-        st.markdown("<h3 style='color:#059669;'>✅ REGIMEN DISPOSITION: CLINICALLY VALIDATED</h3>", unsafe_allow_html=True)
-        st.write("Combination regimen is optimized under modern clinical pharmacology guidelines.")
+    st.header("🧬 Immunological & PGx Markers")
