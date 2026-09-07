@@ -15,12 +15,11 @@ st.markdown("""
     <style>
     .main-title { font-size: 32px; font-weight: bold; color: #1E3A8A; margin-bottom: 5px; }
     .sub-title { font-size: 16px; color: #4B5563; margin-bottom: 25px; }
-    .report-card { padding: 20px; border-radius: 8px; background-color: #F3F4F6; border-left: 5px solid #3B82F6; margin-bottom: 15px; }
     </style>
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="main-title">🛡️ Integrated Precision Antimicrobial Stewardship & Clinical Decision Support System</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title"><b>Lead Investigator:</b> MAYANK VIRMANI (PharmD Scholar) | <b>Core Framework:</b> Translational Pharmacogenomics & Pharmacokinetics Engine (v2.0.0-Beta)</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title"><b>Lead Investigator:</b> MAYANK VIRMANI (PharmD Scholar) | <b>Core Framework:</b> Translational Pharmacogenomics & Pharmacokinetics Engine (v2.0.0)</div>', unsafe_allow_html=True)
 
 # Formal Academic & Legal Boundary Disclaimers
 with st.expander("⚠️ MANDATORY ACADEMIC DISCLAIMER & INTELLECTUAL PROPERTY NOTICE", expanded=False):
@@ -34,7 +33,7 @@ with st.expander("⚠️ MANDATORY ACADEMIC DISCLAIMER & INTELLECTUAL PROPERTY N
 # SIDEBAR: ADVANCED PHARMACOKINETICS (PK) CALCULATION ENGINE
 # ==========================================
 st.sidebar.header("🏥 Patient Demographics & Physiometrics")
-biological_sex = st.sidebar.selectbox("Biological Sex (Required for Baseline CrCl Calculations):", ["Male", "Female"])
+biological_sex = st.sidebar.selectbox("Biological Sex:", ["Male", "Female"])
 age_yrs = st.sidebar.number_input("Patient Age (Years):", min_value=1, max_value=115, value=65)
 height_cm = st.sidebar.number_input("Patient Height (cm):", min_value=100, max_value=250, value=172)
 weight_kg = st.sidebar.number_input("Total Body Weight (TBW) (kg):", min_value=10.0, max_value=250.0, value=88.0)
@@ -42,10 +41,18 @@ scr_mg_dl = st.sidebar.number_input("Serum Creatinine (S_cr) (mg/dL):", min_valu
 
 # Advanced Pharmacokinetic Weight Stratification Logic (Crucial for Obese ICU Settings)
 # Ideal Body Weight (IBW) via Devine Formula (1974)
-if biological_sex == "Male":
-    ibw = 50.0 + 2.3 * ((height_cm / 2.54) - 60) if height_cm > 152.4 else 50.0
+height_in_inches = height_cm / 2.54
+if height_in_inches > 60:
+    inches_above_60 = height_in_inches - 60
+    if biological_sex == "Male":
+        ibw = 50.0 + (2.3 * inches_above_60)
+    else:
+        ibw = 45.5 + (2.3 * inches_above_60)
 else:
-    ibw = 45.5 + 2.3 * ((height_cm / 2.54) - 60) if height_cm > 152.4 else 45.5
+    if biological_sex == "Male":
+        ibw = 50.0
+    else:
+        ibw = 45.5
 
 # Body Mass Index (BMI) & Obesity Trigger Check (>30% of IBW requires Adjusted Body Weight)
 bmi = weight_kg / ((height_cm / 100) ** 2)
@@ -156,11 +163,15 @@ if st.button("⚡ Run High-Fidelity Cross-Check & Generate Audit Trail"):
     # BLOCK A: SYSTEMIC IMMUNOLOGICAL SCREEN
     # ------------------------------------------
     st.markdown("#### 🛑 1. Immunological Safety / Allergy Screening Layer")
-    if "Aminoglycosides" in str(immunological_history) and "Amikacin" in selected_therapeutic_agent:
+    
+    # Convert list elements to string to verify safely
+    allergy_str = " ".join(immunological_history)
+    
+    if "Aminoglycosides" in allergy_str and "Amikacin" in selected_therapeutic_agent:
         st.error("❌ **CRITICAL ALLERGY BREAK:** Absolute Contraindication. Patient profile indicates an active, severe Type I or Type IV hyper-reactivity to the Aminoglycoside class.")
         st.caption("**Compendia Anchor:** *ISMP National Medication Error Warnings / FDA Approved Package Insert Labeling*")
         allergy_breach = True
-    elif "Fluoroquinolones" in str(immunological_history) and "Ciprofloxacin" in selected_therapeutic_agent:
+    elif "Fluoroquinolones" in allergy_str and "Ciprofloxacin" in selected_therapeutic_agent:
         st.error("❌ **CRITICAL ALLERGY BREAK:** Absolute Contraindication. Patient profile indicates cross-sensitivity markers to the Fluoroquinolone class.")
         allergy_breach = True
     else:
