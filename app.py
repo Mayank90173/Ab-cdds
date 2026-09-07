@@ -1,88 +1,63 @@
 import streamlit as st
 import datetime
 
-# Page Configurations
-st.set_page_config(page_title="Precision CDSS Pro v3.0", layout="wide")
+# Page Configuration for High-Tier Display
+st.set_page_config(page_title="Precision CDSS Pro v3.5", layout="wide", initial_sidebar_state="expanded")
 
-st.markdown('<h1 style="color:#1E3A8A;">🛡️ Enterprise-Grade Precision Antimicrobial Stewardship CDSS</h1>', unsafe_allow_html=True)
-st.caption("Developed by: MAYANK VIRMANI (PharmD Scholar) | Multi-Drug Combination Logic Framework")
+# Inject Custom Medical Theme Styling via CSS
+st.markdown("""
+    <style>
+    .main-title { font-size: 34px; font-weight: 800; color: #1E3A8A; text-align: center; margin-bottom: 2px; }
+    .sub-title { font-size: 16px; color: #4B5563; text-align: center; margin-bottom: 25px; font-style: italic; }
+    .section-header { font-size: 22px; font-weight: 700; color: #1E3A8A; border-bottom: 2px solid #E5E7EB; padding-bottom: 5px; margin-top: 20px; }
+    .metric-box { background-color: #F8FAFC; padding: 15px; border-radius: 10px; border: 1px solid #E2E8F0; text-align: center; }
+    .card-critical { background-color: #FEF2F2; padding: 20px; border-radius: 8px; border-left: 6px solid #DC2626; margin-bottom: 15px; }
+    .card-warning { background-color: #FFFBEB; padding: 20px; border-radius: 8px; border-left: 6px solid #D97706; margin-bottom: 15px; }
+    .card-success { background-color: #ECFDF5; padding: 20px; border-radius: 8px; border-left: 6px solid #059669; margin-bottom: 15px; }
+    .card-info { background-color: #F0F9FF; padding: 20px; border-radius: 8px; border-left: 6px solid #0284C7; margin-bottom: 15px; }
+    </style>
+""", unsafe_allow_html=True)
 
-# 50+ CLINICAL ANTIMICROBIAL FORMULARY EMBEDDED IN CODE (NO EXTERNAL FILE NEEDED)
+st.markdown('<div class="main-title">🛡️ Translational Precision Antimicrobial Stewardship & CDSS</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">Lead Investigator: MAYANK VIRMANI (PharmD Scholar) | Core Protocol Framework v3.5.0 (Patent-Pending Architecture)</div>', unsafe_allow_html=True)
+
+# Embedded 50+ Modern Clinical Antimicrobials Knowledge Engine
 @st.cache_data
-def get_embedded_db():
+def get_comprehensive_database():
     return {
-        "Ceftazidime-Avibactam": {"class": "Beta-Lactam/BLI (Recent)", "max_dose": "7.5 g/day", "thresh": 50, "note": "Highly dynamic renal scaling required for CRE coverage."},
-        "Meropenem-Vaborbactam": {"class": "Beta-Lactam/BLI (Recent)", "max_dose": "12 g/day", "thresh": 40, "note": "Reduce dose if CrCl < 40 ml/min."},
-        "Imipenem-Cilastatin-Relebactam": {"class": "Beta-Lactam/BLI (Recent)", "max_dose": "5 g/day", "thresh": 90, "note": "Requires precise renal tracking from CrCl 15 to 90."},
-        "Ceftolozane-Tazobactam": {"class": "Beta-Lactam/BLI (Recent)", "max_dose": "4.5 g/day", "thresh": 50, "note": "Adjust for renal clearance; essential for MDR Pseudomonas."},
-        "Piperacillin-Tazobactam": {"class": "Beta-Lactam/BLI", "max_dose": "16 g/day", "thresh": 40, "note": "Reduce dose to 2.25g q6h or q8h if CrCl < 20."},
-        "Meropenem": {"class": "Carbapenem", "max_dose": "6 g/day", "thresh": 50, "note": "ICU Sepsis default. Reduce to 1g q12h if CrCl 25-50."},
-        "Imipenem": {"class": "Carbapenem", "max_dose": "4 g/day", "thresh": 70, "note": "High dose in renal failure risks CNS toxicity/seizures."},
-        "Ertapenem": {"class": "Carbapenem", "max_dose": "1 g/day", "thresh": 30, "note": "Once daily dosing. Reduce to 500mg if CrCl < 30."},
-        "Doripenem": {"class": "Carbapenem", "max_dose": "3 g/day", "thresh": 50, "note": "Reduce to 250mg q8h if CrCl 30-50."},
-        "Amikacin": {"class": "Aminoglycoside", "max_dose": "15 mg/kg/day", "thresh": 30, "note": "Prolong interval to q48h if CrCl < 30. Check TDM troughs."},
-        "Gentamicin": {"class": "Aminoglycoside", "max_dose": "5 mg/kg/day", "thresh": 30, "note": "Prolong interval to q36h or q48h if CrCl < 30."},
-        "Tobramycin": {"class": "Aminoglycoside", "max_dose": "5 mg/kg/day", "thresh": 30, "note": "Requires aggressive TDM. High nephrotoxicity risk."},
-        "Plazomicin": {"class": "Aminoglycoside (Recent)", "max_dose": "15 mg/kg/day", "thresh": 60, "note": "Next-gen aminoglycoside. Reduce dose if CrCl < 60."},
-        "Vancomycin": {"class": "Glycopeptide", "max_dose": "4 g/day", "thresh": 50, "note": "Mandatory AUC/MIC TDM. Target trough 15-20 mcg/mL in severe infections."},
-        "Teicoplanin": {"class": "Glycopeptide", "max_dose": "12 mg/kg/q12h", "thresh": 40, "note": "Maintenance dose cut by 50% after day 4 if renal crash."},
-        "Telavancin": {"class": "Glycopeptide", "max_dose": "10 mg/kg/day", "thresh": 50, "note": "Black box warning for nephrotoxicity. Avoid if possible."},
-        "Dalbavancin": {"class": "Glycopeptide", "max_dose": "1500 mg/dose", "thresh": 30, "note": "Single or two-dose long acting regimen. Reduce dose by 25% if CrCl < 30."},
-        "Oritavancin": {"class": "Glycopeptide", "max_dose": "1200 mg/dose", "thresh": 0, "note": "Single dose regimen. No adjustment for mild/moderate renal impairment."},
-        "Linezolid": {"class": "Oxazolidinone", "max_dose": "1200 mg/day", "thresh": 0, "note": "No renal adjustment. Monitor CBC for thrombocytopenia if >14 days."},
-        "Tedizolid": {"class": "Oxazolidinone", "max_dose": "200 mg/day", "thresh": 0, "note": "Once daily. No renal or hepatic adjustment required."},
-        "Daptomycin": {"class": "Lipopeptide", "max_dose": "12 mg/kg/day", "thresh": 30, "note": "Monitor CPK levels weekly. Prolong interval to q48h if CrCl < 30."},
-        "Colistin": {"class": "Polymyxin", "max_dose": "300 mg CBA/day", "thresh": 80, "note": "Highly nephrotoxic. Requires strict loading dose and modified maintenance."},
-        "Polymyxin B": {"class": "Polymyxin", "max_dose": "25000 units/kg/day", "thresh": 0, "note": "Cleared non-renally. Preferred over Colistin to avoid AKI."},
-        "Ceftriaxone": {"class": "Cephalosporin", "max_dose": "4 g/day", "thresh": 10, "note": "No routine renal adjustment needed until severe end-stage."},
-        "Ceftazidime": {"class": "Cephalosporin", "max_dose": "6 g/day", "thresh": 50, "note": "Reduce dose significantly if CrCl < 50 to avoid neurotoxicity."},
-        "Cefepime": {"class": "Cephalosporin", "max_dose": "6 g/day", "thresh": 60, "note": "High risk of Cefepime-induced encephalopathy if non-adjusted."},
-        "Ceftaroline": {"class": "Cephalosporin", "max_dose": "1200 mg/day", "thresh": 50, "note": "MRSA active cephalosporin. Reduce dose if CrCl < 50."},
-        "Cefiderocol": {"class": "Cephalosporin", "max_dose": "6 g/day", "thresh": 60, "note": "Siderophore mechanism. Adjust for augmented renal clearance too."},
-        "Voriconazole": {"class": "Triazole Antifungal", "max_dose": "8 mg/kg/q12h", "thresh": 50, "note": "IV vehicle (SBECD) accumulates if CrCl < 50. Switch to Oral PO."},
-        "Isavuconazole": {"class": "Triazole Antifungal", "max_dose": "200 mg/q8h", "thresh": 0, "note": "No renal adjustment. Predictable kinetics."},
-        "Posaconazole": {"class": "Triazole Antifungal", "max_dose": "600 mg/day", "thresh": 50, "note": "IV vehicle accumulates if CrCl < 50. Switch to Oral tablets."},
-        "Fluconazole": {"class": "Triazole Antifungal", "max_dose": "800 mg/day", "thresh": 50, "note": "Reduce maintenance dose by 50% if CrCl < 50."},
-        "Liposomal Amphotericin B": {"class": "Polyene Antifungal", "max_dose": "5 mg/kg/day", "thresh": 0, "note": "Significantly lower nephrotoxicity than deoxycholate."},
-        "Caspofungin": {"class": "Echinocandin", "max_dose": "70 mg/day", "thresh": 0, "note": "Reduce dose to 35mg if moderate/severe hepatic impairment exists."},
-        "Micafungin": {"class": "Echinocandin", "max_dose": "150 mg/day", "thresh": 0, "note": "Metabolized hepatically. No adjustment required for renal clearance."},
-        "Anidulafungin": {"class": "Echinocandin", "max_dose": "100 mg/day", "thresh": 0, "note": "Spontaneous degradation. Safest antifungal in renal failure."},
-        "Ciprofloxacin": {"class": "Fluoroquinolone", "max_dose": "1200 mg/day", "thresh": 30, "note": "Reduce PO/IV dose by 50% if CrCl < 30. Cation chelation risk."},
-        "Levofloxacin": {"class": "Fluoroquinolone", "max_dose": "750 mg/day", "thresh": 50, "note": "Requires major adjustments. e.g. 750mg q48h if CrCl < 20."},
-        "Moxifloxacin": {"class": "Fluoroquinolone", "max_dose": "400 mg/day", "thresh": 0, "note": "Hepatically cleared. No renal adjustment required."},
-        "Tigecycline": {"class": "Tetracycline", "max_dose": "100 mg/day", "thresh": 0, "note": "Broad spectrum but black box warning for increased mortality."},
-        "Eravacycline": {"class": "Tetracycline", "max_dose": "2 mg/kg/day", "thresh": 0, "note": "Next-gen tetracycline for cIAI. No renal adjustments."},
-        "Omadacycline": {"class": "Tetracycline", "max_dose": "100 mg/day", "thresh": 0, "note": "No renal adjustment needed for CABP or ABSSSI."},
-        "Azithromycin": {"class": "Macrolide", "max_dose": "500 mg/day", "thresh": 0, "note": "Hepatic elimination. No renal adjustments required."},
-        "Clarithromycin": {"class": "Macrolide", "max_dose": "1000 mg/day", "thresh": 30, "note": "Reduce dose by 50% if CrCl < 30."},
-        "Clindamycin": {"class": "Lincosamide", "max_dose": "2700 mg/day", "thresh": 0, "note": "Excellent tissue penetration. No renal dose changes needed."},
-        "Metronidazole": {"class": "Nitroimidazole", "max_dose": "1500 mg/day", "thresh": 10, "note": "Anaerobic target default. Minimal renal adjustment required."},
-        "Fosfomycin": {"class": "Phosphonic Acid", "max_dose": "24 g/day", "thresh": 40, "note": "IV formulation requires massive dose restructuring in renal failure."},
-        "Nitrofurantoin": {"class": "Nitrofuran", "max_dose": "400 mg/day", "thresh": 30, "note": "Contraindicated if CrCl < 30 due to lack of therapeutic urinary concentration."},
-        "Trimethoprim-Sulfamethoxazole": {"class": "Sulfonamide", "max_dose": "20 mg/kg/day", "thresh": 30, "note": "Reduce dose by 50% if CrCl 15-30. High hyperkalemia risk."},
-        "Aztreonam": {"class": "Monobactam", "max_dose": "8 g/day", "thresh": 30, "note": "Safe for penicillin allergic patients. Reduce dose by 50% if CrCl < 30."},
-        "Luluiconazole": {"class": "Imidazole Topical", "max_dose": "Topical application bound", "thresh": 0, "note": "No systemic dosage adjustment required due to negligible absorption."}
-    }
-
-db = get_embedded_db()
-
-# Patient Metrics Setup
-col1, col2 = st.columns(2)
-with col1:
-    st.header("🏥 Patient Demographics")
-    clinical_setting = st.selectbox("Clinical Environment:", ["ICU (Intensive Care)", "Medical Wards (IPD)", "OPD (Outpatient)"])
-    gender = st.selectbox("Biological Sex:", ["Male", "Female"])
-    age = st.number_input("Age (Years):", min_value=1, max_value=110, value=65)
-    height_cm = st.number_input("Height (cm):", min_value=100, max_value=250, value=170)
-    weight_kg = st.number_input("Weight (kg):", min_value=5, max_value=250, value=85)
-    scr = st.number_input("Serum Creatinine (mg/dL):", min_value=0.2, max_value=10.0, value=1.6)
-
-    # Ideal Body Weight and Dosing Weight calculations
-    height_in = height_cm / 2.54
-    ibw = (50.0 if gender == "Male" else 45.5) + (2.3 * (height_in - 60) if height_in > 60 else 0)
-    dosing_weight = ibw + 0.4 * (weight_kg - ibw) if weight_kg > (1.3 * ibw) else weight_kg
-    cr_cl = round((((140 - age) * dosing_weight) / (72 * scr)) * (0.85 if gender == "Female" else 1.0), 2)
-    st.info(f"💡 **Calculated Clearance (CrCl):** {cr_cl} mL/min")
-
-with col2:
-    st.header("🧬 Immunological & PGx Markers")
+        "Ceftazidime-Avibactam": {"class": "Beta-Lactam/BLI Combination (Recent)", "max_dose": "7.5 g/day", "thresh": 50, "note": "Target: Carbapenem-Resistant Enterobacteriaceae (CRE) & DTR-Pseudomonas. Dynamic renal titrations critical."},
+        "Meropenem-Vaborbactam": {"class": "Beta-Lactam/BLI Combination (Recent)", "max_dose": "12 g/day", "thresh": 40, "note": "Engineered against KPC-producing organisms. Downward titration mandated if CrCl < 40 mL/min."},
+        "Imipenem-Cilastatin-Relebactam": {"class": "Beta-Lactam/BLI Combination (Recent)", "max_dose": "5 g/day", "thresh": 60, "note": "Covers multi-drug resistant Gram-negative rods. Requires proactive monitoring from CrCl 15 to 60."},
+        "Ceftolozane-Tazobactam": {"class": "Beta-Lactam/BLI Combination (Recent)", "max_dose": "4.5 g/day", "thresh": 50, "note": "Highly effective against complex multi-drug resistant Pseudomonas aeruginosa profiles."},
+        "Piperacillin-Tazobactam": {"class": "Extended Penicillin / BLI Backbone", "max_dose": "18 g/day", "thresh": 20, "note": "Empiric ICU standard. Monitor for high Acute Kidney Injury (AKI) correlation when paired with Vancomycin."},
+        "Meropenem": {"class": "High-End Carbapenem", "max_dose": "6 g/day", "thresh": 50, "note": "ICU Severe Sepsis primary defense line. Scale down systematically if CrCl drops under 50 mL/min."},
+        "Imipenem-Cilastatin": {"class": "High-End Carbapenem", "max_dose": "4 g/day", "thresh": 70, "note": "High serum concentrations in unadjusted renal impairment significantly lower seizure threshold (CNS toxicity)."},
+        "Ertapenem": {"class": "Group 1 Carbapenem", "max_dose": "1 g/day", "thresh": 30, "note": "Lacks active coverage boundaries for Pseudomonas or Acinetobacter. Adjust maintenance if CrCl < 30."},
+        "Doripenem": {"class": "High-End Carbapenem", "max_dose": "3 g/day", "thresh": 50, "note": "Indicated for complex intra-abdominal pathologies and nosocomial pneumonia frameworks."},
+        "Amikacin": {"class": "Aminoglycoside Architecture", "max_dose": "1.5 g/day", "thresh": 60, "note": "High toxicity risks. Requires broad dosing interval extensions (q36h/q48h) matched with active baseline TDM charts."},
+        "Gentamicin": {"class": "Aminoglycoside Architecture", "max_dose": "Based on TDM calculations", "thresh": 60, "note": "Requires target peak/trough validation. Highly synergistic with Beta-Lactams for Endocarditis."},
+        "Tobramycin": {"class": "Aminoglycoside Architecture", "max_dose": "Based on weight/TDM", "thresh": 60, "note": "High nephrotoxic ceiling. Primary utilization via inhalation pathways for Cystic Fibrosis management."},
+        "Plazomicin": {"class": "Next-Gen Aminoglycoside (Recent)", "max_dose": "Based on PK profiles", "thresh": 60, "note": "Designed molecularly to evade common Aminoglycoside-Modifying Enzymes (AMEs)."},
+        "Vancomycin": {"class": "Glycopeptide Class", "max_dose": "Based on continuous AUC calculations", "thresh": 50, "note": "Gold standard for MRSA. Maintain precise AUC/MIC ratios (400-600) via TDM troughs to avoid nephrotoxicity."},
+        "Teicoplanin": {"class": "Glycopeptide Class", "max_dose": "1.2 g/day", "thresh": 50, "note": "Extremely long half-life profile. Reduce subsequent maintenance parameters by 50% past day 4 if clearance drops."},
+        "Dalbavancin": {"class": "Lipoglycopeptide Complex (Recent)", "max_dose": "1500 mg/course", "thresh": 30, "note": "Two-week biological half-life. Ideal for ambulatory care transitions. Lower dose by 25% if CrCl < 30."},
+        "Oritavancin": {"class": "Lipoglycopeptide Complex (Recent)", "max_dose": "1200 mg single dose", "thresh": 0, "note": "Single-dose absolute protocol. No adjustments needed. Caution: causes artificial laboratory aPTT prolongation."},
+        "Linezolid": {"class": "Oxazolidinone Class", "max_dose": "1.2 g/day", "thresh": 0, "note": "No renal adjustments. Track baseline CBC for severe myelosuppression/thrombocytopenia if used past 14 days."},
+        "Tedizolid": {"class": "Next-Gen Oxazolidinone (Recent)", "max_dose": "200 mg/day", "thresh": 0, "note": "Once-daily highly bioavailable strategy. Displays structural optimization minimizing myelosuppression."},
+        "Daptomycin": {"class": "Cyclic Lipopeptide Class", "max_dose": "12 mg/kg/day", "thresh": 30, "note": "Inactivated by surfactant (Do NOT use in Pneumonia). Extend intervals to q48h if CrCl < 30. Track weekly CPK."},
+        "Polymyxin B": {"class": "Polymyxin System", "max_dose": "Based on weight metrics", "thresh": 0, "note": "Eliminated via non-renal pathways. Preferred over Colistin to mitigate Acute Kidney Injury profiles in MDR Gram-negatives."},
+        "Colistin (CMS)": {"class": "Polymyxin System", "max_dose": "9 million IU loading baseline", "thresh": 50, "note": "Administered as an inactive prodrug. Highly volatile clearance profiles require rigorous continuous calculations."},
+        "Ceftriaxone": {"class": "3rd Gen Cephalosporin", "max_dose": "4 g/day", "thresh": 0, "note": "Dual biliary/renal clearance. No routine titration needed. Contraindicated in neonates due to biliary sludge hazards."},
+        "Ceftazidime": {"class": "3rd Gen Cephalosporin", "max_dose": "6 g/day", "thresh": 50, "note": "Anti-pseudomonal coverage. Requires systematic titration to prevent neurotoxic/encephalopathy events."},
+        "Cefepime": {"class": "4th Gen Cephalosporin", "max_dose": "6 g/day", "thresh": 50, "note": "High-risk correlation with Cefepime-Induced Encephalopathy (NCSE) if renal clearance parameters drop unadjusted."},
+        "Ceftaroline": {"class": "Advanced Gen MRSA Cephalosporin", "max_dose": "1.2 g/day", "thresh": 50, "note": "The only beta-lactam displaying advanced binding affinity for MRSA PBP2a targets."},
+        "Cefiderocol": {"class": "Siderophore Cephalosporin (Recent)", "max_dose": "6 g/day", "thresh": 60, "note": "Trojan-horse iron transport binding mechanism. Requires dynamic updates for both failure and augmented renal states."},
+        "Voriconazole": {"class": "Triazole Antifungal Architecture", "max_dose": "Based on trough testing", "thresh": 50, "note": "IV vehicle (SBECD) accumulates during renal failure. Pivot immediately to Oral (PO) route if CrCl < 50."},
+        "Isavuconazole": {"class": "Triazole Antifungal Architecture (Recent)", "max_dose": "200 mg/day maintenance", "thresh": 0, "note": "Predictable pharmacokinetic architecture. Shortens QTc intervals. Safe across complex renal clearances."},
+        "Posaconazole": {"class": "Triazole Antifungal Architecture", "max_dose": "600 mg/day", "thresh": 50, "note": "IV formulation vehicle accumulates during renal drop-offs. Transition to targeted oral options."},
+        "Fluconazole": {"class": "Triazole Antifungal Architecture", "max_dose": "800 mg/day", "thresh": 50, "note": "Highly water soluble with excellent urinary penetration. Reduce maintenance by 50% if CrCl < 50."},
+        "Liposomal Amphotericin B": {"class": "Polyene Antifungal Matrix", "max_dose": "10 mg/kg/day", "thresh": 0, "note": "Broadest spectrum choice. Significantly lower nephrotoxicity ceiling than standard deoxycholate models."},
+        "Caspofungin": {"class": "Echinocandin Architecture", "max_dose": "70 mg loading threshold", "thresh": 0, "note": "Inhibits 1,3-beta-D-glucan wall synthesis. Reduce maintenance parameters if Child-Pugh score is severe."},
+        "Micafungin": {"class": "Echinocandin Architecture", "max_dose": "150 mg/day", "thresh": 0, "note": "Metabolized hepatically. Demonstrates an excellent safety index in acute renal failure models."},
+        "Anidulafungin": {"class": "Echinocandin Architecture", "max_dose": "100 mg/day maintenance", "thresh": 0, "note": "Undergoes spontaneous non-enzymatic degradation in blood. The safest antifungal in mixed hepatic/renal crashes."},
+        "Ciprofloxacin": {"class": "Fluoroquinolone System", "max_dose": "1.2 g/day (IV)", "thresh": 30, "note": "Cut dose by 50% if CrCl < 30. High risk for multi-valent cation chelation via oral pathways."},
