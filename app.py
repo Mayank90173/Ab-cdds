@@ -1,63 +1,84 @@
 import streamlit as st
-import datetime
 
-# Page Configuration for High-Tier Display
-st.set_page_config(page_title="Precision CDSS Pro v3.5", layout="wide", initial_sidebar_state="expanded")
+# ==========================================
+# SYSTEM CORE INTEGRATION & METADATA CONFIG
+# ==========================================
+st.set_page_config(
+    page_title="Precision CDSS Master Engine v4.0", 
+    layout="wide", 
+    initial_sidebar_state="expanded"
+)
 
-# Inject Custom Medical Theme Styling via CSS
+# Deep Medical Infrastructure High-Fidelity Custom Themes
 st.markdown("""
     <style>
     .main-title { font-size: 34px; font-weight: 800; color: #1E3A8A; text-align: center; margin-bottom: 2px; }
-    .sub-title { font-size: 16px; color: #4B5563; text-align: center; margin-bottom: 25px; font-style: italic; }
-    .section-header { font-size: 22px; font-weight: 700; color: #1E3A8A; border-bottom: 2px solid #E5E7EB; padding-bottom: 5px; margin-top: 20px; }
-    .metric-box { background-color: #F8FAFC; padding: 15px; border-radius: 10px; border: 1px solid #E2E8F0; text-align: center; }
-    .card-critical { background-color: #FEF2F2; padding: 20px; border-radius: 8px; border-left: 6px solid #DC2626; margin-bottom: 15px; }
-    .card-warning { background-color: #FFFBEB; padding: 20px; border-radius: 8px; border-left: 6px solid #D97706; margin-bottom: 15px; }
-    .card-success { background-color: #ECFDF5; padding: 20px; border-radius: 8px; border-left: 6px solid #059669; margin-bottom: 15px; }
-    .card-info { background-color: #F0F9FF; padding: 20px; border-radius: 8px; border-left: 6px solid #0284C7; margin-bottom: 15px; }
+    .sub-title { font-size: 15px; color: #4B5563; text-align: center; margin-bottom: 20px; font-style: italic; }
+    .section-header { font-size: 22px; font-weight: 700; color: #1E3A8A; border-bottom: 3px solid #3B82F6; padding-bottom: 5px; margin-top: 20px; }
+    .model-card { background-color: #F8FAFC; padding: 18px; border-radius: 10px; border: 1px solid #CBD5E1; margin-bottom: 15px; }
+    .status-block { font-size: 24px; font-weight: 800; text-align: center; padding: 15px; border-radius: 8px; margin-top: 15px; }
+    /* Micro-alert layouts matching patent-ready architecture blueprints */
+    .critical-box { background-color: #FEF2F2; padding: 15px; border-radius: 8px; border-left: 6px solid #DC2626; color: #991B1B; margin-bottom: 12px; }
+    .warning-box { background-color: #FFFBEB; padding: 15px; border-radius: 8px; border-left: 6px solid #D97706; color: #92400E; margin-bottom: 12px; }
+    .success-box { background-color: #ECFDF5; padding: 15px; border-radius: 8px; border-left: 6px solid #059669; color: #065F46; margin-bottom: 12px; }
+    .info-box { background-color: #F0F9FF; padding: 15px; border-radius: 8px; border-left: 6px solid #0284C7; color: #075985; margin-bottom: 12px; }
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="main-title">🛡️ Translational Precision Antimicrobial Stewardship & CDSS</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title">Lead Investigator: MAYANK VIRMANI (PharmD Scholar) | Core Protocol Framework v3.5.0 (Patent-Pending Architecture)</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title">🛡️ Integrated Precision Antimicrobial Stewardship Model Framework</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">Lead Investigator: MAYANK VIRMANI (PharmD Scholar) | Academic CDSS Production Paradigm v4.0.0 (Patent Stable)</div>', unsafe_allow_html=True)
 
-# Embedded 50+ Modern Clinical Antimicrobials Knowledge Engine
+# Mandatory Translational Learning Core Disclaimers
+with st.expander("⚠️ CORE MODEL INTELLECTUAL PROPERTY & SIMULATION PROTOCOLS", expanded=False):
+    st.markdown("""
+    **Translational Clinical Paradigm:** This model represents an end-to-end digital health architecture. It integrates complex multi-compartmental pharmacokinetic clearances with targeted genomic allele penetration weights. Designed strictly for educational modeling, simulations, and intellectual exploration within secondary clinical pharmacy paradigms. 
+    
+    *Full Process Logic Mapping, Multi-Variable Interlocking Tree & System State Architecture © Patent-Pending 2026.*
+    """)
+
+# ==========================================
+# REPOSITORY KNOWLEDGE BASE: 50+ DRUGS COMPREHENSIVE REGISTRY
+# ==========================================
 @st.cache_data
-def get_comprehensive_database():
+def load_system_formulary_model():
     return {
-        "Ceftazidime-Avibactam": {"class": "Beta-Lactam/BLI Combination (Recent)", "max_dose": "7.5 g/day", "thresh": 50, "note": "Target: Carbapenem-Resistant Enterobacteriaceae (CRE) & DTR-Pseudomonas. Dynamic renal titrations critical."},
-        "Meropenem-Vaborbactam": {"class": "Beta-Lactam/BLI Combination (Recent)", "max_dose": "12 g/day", "thresh": 40, "note": "Engineered against KPC-producing organisms. Downward titration mandated if CrCl < 40 mL/min."},
-        "Imipenem-Cilastatin-Relebactam": {"class": "Beta-Lactam/BLI Combination (Recent)", "max_dose": "5 g/day", "thresh": 60, "note": "Covers multi-drug resistant Gram-negative rods. Requires proactive monitoring from CrCl 15 to 60."},
-        "Ceftolozane-Tazobactam": {"class": "Beta-Lactam/BLI Combination (Recent)", "max_dose": "4.5 g/day", "thresh": 50, "note": "Highly effective against complex multi-drug resistant Pseudomonas aeruginosa profiles."},
-        "Piperacillin-Tazobactam": {"class": "Extended Penicillin / BLI Backbone", "max_dose": "18 g/day", "thresh": 20, "note": "Empiric ICU standard. Monitor for high Acute Kidney Injury (AKI) correlation when paired with Vancomycin."},
-        "Meropenem": {"class": "High-End Carbapenem", "max_dose": "6 g/day", "thresh": 50, "note": "ICU Severe Sepsis primary defense line. Scale down systematically if CrCl drops under 50 mL/min."},
-        "Imipenem-Cilastatin": {"class": "High-End Carbapenem", "max_dose": "4 g/day", "thresh": 70, "note": "High serum concentrations in unadjusted renal impairment significantly lower seizure threshold (CNS toxicity)."},
-        "Ertapenem": {"class": "Group 1 Carbapenem", "max_dose": "1 g/day", "thresh": 30, "note": "Lacks active coverage boundaries for Pseudomonas or Acinetobacter. Adjust maintenance if CrCl < 30."},
-        "Doripenem": {"class": "High-End Carbapenem", "max_dose": "3 g/day", "thresh": 50, "note": "Indicated for complex intra-abdominal pathologies and nosocomial pneumonia frameworks."},
-        "Amikacin": {"class": "Aminoglycoside Architecture", "max_dose": "1.5 g/day", "thresh": 60, "note": "High toxicity risks. Requires broad dosing interval extensions (q36h/q48h) matched with active baseline TDM charts."},
-        "Gentamicin": {"class": "Aminoglycoside Architecture", "max_dose": "Based on TDM calculations", "thresh": 60, "note": "Requires target peak/trough validation. Highly synergistic with Beta-Lactams for Endocarditis."},
-        "Tobramycin": {"class": "Aminoglycoside Architecture", "max_dose": "Based on weight/TDM", "thresh": 60, "note": "High nephrotoxic ceiling. Primary utilization via inhalation pathways for Cystic Fibrosis management."},
-        "Plazomicin": {"class": "Next-Gen Aminoglycoside (Recent)", "max_dose": "Based on PK profiles", "thresh": 60, "note": "Designed molecularly to evade common Aminoglycoside-Modifying Enzymes (AMEs)."},
-        "Vancomycin": {"class": "Glycopeptide Class", "max_dose": "Based on continuous AUC calculations", "thresh": 50, "note": "Gold standard for MRSA. Maintain precise AUC/MIC ratios (400-600) via TDM troughs to avoid nephrotoxicity."},
-        "Teicoplanin": {"class": "Glycopeptide Class", "max_dose": "1.2 g/day", "thresh": 50, "note": "Extremely long half-life profile. Reduce subsequent maintenance parameters by 50% past day 4 if clearance drops."},
-        "Dalbavancin": {"class": "Lipoglycopeptide Complex (Recent)", "max_dose": "1500 mg/course", "thresh": 30, "note": "Two-week biological half-life. Ideal for ambulatory care transitions. Lower dose by 25% if CrCl < 30."},
-        "Oritavancin": {"class": "Lipoglycopeptide Complex (Recent)", "max_dose": "1200 mg single dose", "thresh": 0, "note": "Single-dose absolute protocol. No adjustments needed. Caution: causes artificial laboratory aPTT prolongation."},
-        "Linezolid": {"class": "Oxazolidinone Class", "max_dose": "1.2 g/day", "thresh": 0, "note": "No renal adjustments. Track baseline CBC for severe myelosuppression/thrombocytopenia if used past 14 days."},
-        "Tedizolid": {"class": "Next-Gen Oxazolidinone (Recent)", "max_dose": "200 mg/day", "thresh": 0, "note": "Once-daily highly bioavailable strategy. Displays structural optimization minimizing myelosuppression."},
-        "Daptomycin": {"class": "Cyclic Lipopeptide Class", "max_dose": "12 mg/kg/day", "thresh": 30, "note": "Inactivated by surfactant (Do NOT use in Pneumonia). Extend intervals to q48h if CrCl < 30. Track weekly CPK."},
-        "Polymyxin B": {"class": "Polymyxin System", "max_dose": "Based on weight metrics", "thresh": 0, "note": "Eliminated via non-renal pathways. Preferred over Colistin to mitigate Acute Kidney Injury profiles in MDR Gram-negatives."},
-        "Colistin (CMS)": {"class": "Polymyxin System", "max_dose": "9 million IU loading baseline", "thresh": 50, "note": "Administered as an inactive prodrug. Highly volatile clearance profiles require rigorous continuous calculations."},
-        "Ceftriaxone": {"class": "3rd Gen Cephalosporin", "max_dose": "4 g/day", "thresh": 0, "note": "Dual biliary/renal clearance. No routine titration needed. Contraindicated in neonates due to biliary sludge hazards."},
-        "Ceftazidime": {"class": "3rd Gen Cephalosporin", "max_dose": "6 g/day", "thresh": 50, "note": "Anti-pseudomonal coverage. Requires systematic titration to prevent neurotoxic/encephalopathy events."},
-        "Cefepime": {"class": "4th Gen Cephalosporin", "max_dose": "6 g/day", "thresh": 50, "note": "High-risk correlation with Cefepime-Induced Encephalopathy (NCSE) if renal clearance parameters drop unadjusted."},
-        "Ceftaroline": {"class": "Advanced Gen MRSA Cephalosporin", "max_dose": "1.2 g/day", "thresh": 50, "note": "The only beta-lactam displaying advanced binding affinity for MRSA PBP2a targets."},
-        "Cefiderocol": {"class": "Siderophore Cephalosporin (Recent)", "max_dose": "6 g/day", "thresh": 60, "note": "Trojan-horse iron transport binding mechanism. Requires dynamic updates for both failure and augmented renal states."},
-        "Voriconazole": {"class": "Triazole Antifungal Architecture", "max_dose": "Based on trough testing", "thresh": 50, "note": "IV vehicle (SBECD) accumulates during renal failure. Pivot immediately to Oral (PO) route if CrCl < 50."},
-        "Isavuconazole": {"class": "Triazole Antifungal Architecture (Recent)", "max_dose": "200 mg/day maintenance", "thresh": 0, "note": "Predictable pharmacokinetic architecture. Shortens QTc intervals. Safe across complex renal clearances."},
-        "Posaconazole": {"class": "Triazole Antifungal Architecture", "max_dose": "600 mg/day", "thresh": 50, "note": "IV formulation vehicle accumulates during renal drop-offs. Transition to targeted oral options."},
-        "Fluconazole": {"class": "Triazole Antifungal Architecture", "max_dose": "800 mg/day", "thresh": 50, "note": "Highly water soluble with excellent urinary penetration. Reduce maintenance by 50% if CrCl < 50."},
-        "Liposomal Amphotericin B": {"class": "Polyene Antifungal Matrix", "max_dose": "10 mg/kg/day", "thresh": 0, "note": "Broadest spectrum choice. Significantly lower nephrotoxicity ceiling than standard deoxycholate models."},
-        "Caspofungin": {"class": "Echinocandin Architecture", "max_dose": "70 mg loading threshold", "thresh": 0, "note": "Inhibits 1,3-beta-D-glucan wall synthesis. Reduce maintenance parameters if Child-Pugh score is severe."},
-        "Micafungin": {"class": "Echinocandin Architecture", "max_dose": "150 mg/day", "thresh": 0, "note": "Metabolized hepatically. Demonstrates an excellent safety index in acute renal failure models."},
-        "Anidulafungin": {"class": "Echinocandin Architecture", "max_dose": "100 mg/day maintenance", "thresh": 0, "note": "Undergoes spontaneous non-enzymatic degradation in blood. The safest antifungal in mixed hepatic/renal crashes."},
-        "Ciprofloxacin": {"class": "Fluoroquinolone System", "max_dose": "1.2 g/day (IV)", "thresh": 30, "note": "Cut dose by 50% if CrCl < 30. High risk for multi-valent cation chelation via oral pathways."},
+        # 1. NEWER BL-BLI NOVEL BLOCKBUSTERS
+        "Ceftazidime-Avibactam": {"class": "BL-BLI Combination", "max_dose": "7.5 g/day", "thresh": 50, "mechanism": "Inhibits Class A, C, and some D beta-lactamases", "note": "Target: KPC, OXA-48 CRE, and DTR-Pseudomonas. Dynamic renal titrations critical."},
+        "Meropenem-Vaborbactam": {"class": "BL-BLI Combination", "max_dose": "12 g/day", "thresh": 40, "mechanism": "Boronic acid BLI protecting carbapenem frame", "note": "Engineered directly against Klebsiella pneumoniae carbapenemases (KPC). Titrate if CrCl < 40."},
+        "Imipenem-Cilastatin-Relebactam": {"class": "BL-BLI Combination", "max_dose": "5 g/day", "thresh": 60, "mechanism": "Diazabicyclooctane BLI combination matrix", "note": "Covers MDR Gram-negative rods. Requires proactive monitoring from CrCl 15 to 60."},
+        "Ceftolozane-Tazobactam": {"class": "BL-BLI Combination", "max_dose": "4.5 g/day", "thresh": 50, "mechanism": "Advanced cephalosporin with classic BLI anchor", "note": "Highly effective against complex multi-drug resistant Pseudomonas aeruginosa profiles."},
+        "Piperacillin-Tazobactam": {"class": "Penicillin/BLI", "max_dose": "18 g/day", "thresh": 20, "mechanism": "Extended-spectrum penicillin + suicide inhibitor", "note": "Empiric IPD/ICU standard. High AKI correlation marker when paired with Vancomycin."},
+        
+        # 2. THE CARBAPENEMS (HIGH END SEPSis MONOTHERAPIES)
+        "Meropenem": {"class": "Carbapenem", "max_dose": "6 g/day", "thresh": 50, "mechanism": "Binds PBP-2 and PBP-3 to halt cell-wall synthesis", "note": "ICU Severe Sepsis primary defense line. Scale down systematically if CrCl drops under 50."},
+        "Imipenem-Cilastatin": {"class": "Carbapenem", "max_dose": "4 g/day", "thresh": 70, "mechanism": "Carbapenem paired with renal dehydropeptidase inhibitor", "note": "High unadjusted renal serum concentrations severely lower seizure threshold (CNS neurotoxicity)."},
+        "Ertapenem": {"class": "Carbapenem", "max_dose": "1 g/day", "thresh": 30, "mechanism": "Group 1 Carbapenem with long half-life clearance", "note": "Lacks active coverage boundaries for Pseudomonas or Acinetobacter. Once daily dosing default."},
+        "Doripenem": {"class": "Carbapenem", "max_dose": "3 g/day", "thresh": 50, "mechanism": "Ultra-broad carbapenem configuration", "note": "Indicated for complex intra-abdominal pathologies and nosocomial pneumonia frameworks."},
+        
+        # 3. HIGH TOXICITY CEILING AMINOGLYCOSIDES
+        "Amikacin": {"class": "Aminoglycoside", "max_dose": "1.5 g/day", "thresh": 60, "mechanism": "Irreversibly binds 30S ribosomal subunit causing misreading", "note": "Requires extended intervals (q36h/q48h) matched with active TDM charts to mitigate AKI / Ototoxicity."},
+        "Gentamicin": {"class": "Aminoglycoside", "max_dose": "Based on TDM calculations", "thresh": 60, "mechanism": "Binds 30S subunit inhibiting protein translation", "note": "Requires target peak/trough validation. Highly synergistic with Beta-Lactams for Endocarditis."},
+        "Tobramycin": {"class": "Aminoglycoside", "max_dose": "Based on weight/TDM", "thresh": 60, "mechanism": "Binds 30S subunit causing cell membrane disruption", "note": "High nephrotoxic ceiling. Primary utilization via inhalation pathways for Cystic Fibrosis management."},
+        "Plazomicin": {"class": "Aminoglycoside", "max_dose": "Based on PK profiles", "thresh": 60, "mechanism": "Next-gen aminoglycoside engineered against AMEs", "note": "Designed molecularly to evade common Aminoglycoside-Modifying Enzymes (AMEs). Target: cUTI."},
+        
+        # 4. GLYCOPEPTIDES & LIPOGLYCOPEPTIDES
+        "Vancomycin": {"class": "Glycopeptide", "max_dose": "Based on AUC curves", "thresh": 50, "mechanism": "Inhibits cell wall synthesis by binding D-Ala-D-Ala terminus", "note": "Gold standard for MRSA. Maintain precise AUC/MIC ratios (400-600) via TDM troughs to avoid nephrotoxicity."},
+        "Teicoplanin": {"class": "Glycopeptide", "max_dose": "1.2 g/day", "thresh": 50, "mechanism": "Glycopeptide with lipophilic side chain", "note": "Extremely long half-life profile. Reduce subsequent maintenance parameters by 50% past day 4 if clearance drops."},
+        "Dalbavancin": {"class": "Lipoglycopeptide", "max_dose": "1500 mg/course", "thresh": 30, "note": "Two-week biological half-life. Ideal for ambulatory care transitions. Lower dose by 25% if CrCl < 30."},
+        "Oritavancin": {"class": "Lipoglycopeptide", "max_dose": "1200 mg single dose", "thresh": 0, "note": "Single-dose absolute protocol. No adjustments needed. Caution: causes artificial laboratory aPTT prolongation."},
+        
+        # 5. CYCLIC LIPOPEPTIDES & OXAZOLIDINONES
+        "Linezolid": {"class": "Oxazolidinone", "max_dose": "1.2 g/day", "thresh": 0, "note": "No renal adjustments. Track baseline CBC for severe myelosuppression/thrombocytopenia if used past 14 days."},
+        "Tedizolid": {"class": "Oxazolidinone", "max_dose": "200 mg/day", "thresh": 0, "note": "Once-daily highly bioavailable strategy. Displays structural optimization minimizing myelosuppression."},
+        "Daptomycin": {"class": "Lipopeptide", "max_dose": "12 mg/kg/day", "thresh": 30, "note": "Inactivated by surfactant (Do NOT use in Pneumonia). Extend intervals to q48h if CrCl < 30. Track weekly CPK."},
+        
+        # 6. POLYMYXINS & BACKUPS
+        "Polymyxin B": {"class": "Polymyxin", "max_dose": "Weight-optimized bounds", "thresh": 0, "note": "Eliminated via non-renal pathways. Preferred over Colistin to mitigate Acute Kidney Injury profiles in MDR Gram-negatives."},
+        "Colistin (CMS)": {"class": "Polymyxin", "max_dose": "9 million IU loading", "thresh": 50, "note": "Administered as an inactive prodrug. Highly volatile clearance profiles require rigorous continuous calculations."},
+        "Tigecycline": {"class": "Tetracycline", "max_dose": "100 mg/day", "thresh": 0, "note": "Massive volume of tissue distribution leads to low serum values. Avoid in primary bacteremias."},
+        "Eravacycline": {"class": "Tetracycline", "max_dose": "Weight tracking defaults", "thresh": 0, "note": "Engineered to bypass standard ribosomal protection efflux mechanics in intra-abdominal settings."},
+        "Omadacycline": {"class": "Tetracycline", "max_dose": "300 mg daily oral", "thresh": 0, "note": "Once-daily profile with excellent lung tissue clearance configurations. No renal titration required."},
+        
+        # 7. ADVANCED CEPHALOSPORINS
+        "Ceftriaxone": {"class": "Cephalosporin", "max_dose": "4 g/day", "thresh": 0, "note": "Dual biliary/renal clearance. No routine titration needed. Contraindicated in neonates due to biliary sludge hazards."},
+        "Ceftazidime": {"class": "Cephalosporin", "max_dose": "6 g/day", "thresh": 50, "note": "Anti-pseudomonal coverage. Requires systematic titration to prevent neurotoxic/encephalopathy events."},
