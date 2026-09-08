@@ -5,9 +5,9 @@ import io
 from datetime import datetime
 
 # ==============================================================================
-# PRECISION CDSS MASTER PRODUCTION MODEL v23.0 (PORTFOLIO PRO VERSION - ROBUST)
+# PRECISION CDSS MASTER PRODUCTION MODEL v24.0 (GITHUB PRODUCTION LIVE ENGINE)
 # ==============================================================================
-st.set_page_config(page_title="Precision CDSS Pro v23.0", layout="wide")
+st.set_page_config(page_title="Precision CDSS Pro v24.0", layout="wide")
 
 # Custom Medical CSS Theme for High-Performance Clinical Dashboards
 st.markdown("""
@@ -23,7 +23,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="main-title">Translational Precision Antimicrobial Stewardship Framework Model</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title">Lead Investigator: MAYANK VIRMANI (PharmD, PV Scientist) | GitHub Portfolio Engine v23.0</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">Lead Investigator: MAYANK VIRMANI (PharmD, PV Scientist) | GitHub Production Engine v24.0</div>', unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
 # 1. CLINICAL SIDEBAR COHORT MATRIX
@@ -46,24 +46,15 @@ ward_type = st.sidebar.selectbox("Select Location Type:", ["OPD (Outpatient)", "
 
 st.sidebar.markdown("---")
 st.sidebar.header("🩺 Comorbidities & Risks")
-comorbidities = st.sidebar.multiselect(
-    "Select Pathologies:",
-    ["None", "Decompensated Liver Cirrhosis", "Severe Neutropenia", "Chronic Kidney Disease (CKD)", "Epilepsy History"]
-)
+comorbidities = st.sidebar.multiselect("Select Pathologies:", ["None", "Decompensated Liver Cirrhosis", "Severe Neutropenia", "Chronic Kidney Disease (CKD)", "Epilepsy History"])
 
 st.sidebar.markdown("---")
 st.sidebar.header("💊 Concomitant Medications (DDI Check)")
-concurrent_meds = st.sidebar.multiselect(
-    "Select Current Medications:",
-    ["None", "Warfarin", "Antacids / Calcium Supplements", "SSRI Antidepressants"]
-)
+concurrent_meds = st.sidebar.multiselect("Select Current Medications:", ["None", "Warfarin", "Antacids / Calcium Supplements", "SSRI Antidepressants"])
 
 st.sidebar.markdown("---")
 st.sidebar.header("🧬 Actionable PGx Biomarkers")
-pgx_variant = st.sidebar.selectbox(
-    "Patient Genomic Status:",
-    ["Wild Type", "MT-RNR1 m.1555A>G Carrier", "CYP2C19 Poor Metabolizer"]
-)
+pgx_variant = st.sidebar.selectbox("Patient Genomic Status:", ["Wild Type", "MT-RNR1 m.1555A>G Carrier", "CYP2C19 Poor Metabolizer"])
 
 # Cockcroft-Gault Engine
 if gender == "Male":
@@ -90,7 +81,6 @@ if selected_drug == "Ceftazidime-Avibactam":
     tox_desc = "Risk of high concentration induced neurotoxicity and CDAD tracking profiles."
     path_res = "Strong coverage profiles verified against KPC and OXA-48 CRE lines; fails against MBL strains."
     resistance_risk = "Medium"
-
 elif selected_drug == "Meropenem":
     drug_class, threshold, tox_score, base_peak = "High-End Carbapenem", 50, 4, 60.0
     food_adv = "Intravenous administration vector. Stable across varied nutritional backgrounds."
@@ -98,7 +88,6 @@ elif selected_drug == "Meropenem":
     tox_desc = "GABA-A binding structures lower seizure threshold profiles in renal failure lines."
     path_res = "Susceptible to active structural blockages from Carbapenem-Resistant Enterobacteriaceae (CRE)."
     resistance_risk = "High"
-
 elif selected_drug == "Amikacin":
     drug_class, threshold, tox_score, base_peak = "Aminoglycoside Architecture", 60, 9, 45.0
     food_adv = "Injected asset profile. Unaffected by systemic metabolic oral gut food barriers."
@@ -106,7 +95,6 @@ elif selected_drug == "Amikacin":
     tox_desc = "Irreversible bilateral cochlear-vestibular auditory toxicity and direct tubular injury panels."
     path_res = "Strong tracking metrics against hyper-resistant gram-negative pathogens as short empiric blockades."
     resistance_risk = "Low"
-
 elif selected_drug == "Vancomycin":
     drug_class, threshold, tox_score, base_peak = "Glycopeptide Class", 50, 7, 35.0
     food_adv = "IV administration setup. No gastrointestinal food dependencies mapped."
@@ -114,7 +102,6 @@ elif selected_drug == "Vancomycin":
     tox_desc = "Dose-dependent Acute Tubular Necrosis (ATN) nephrotoxicity risks; histamine-driven Red Man Syndrome."
     path_res = "Requires active monitoring tracking profiles targeting emerging VRE and VISA isolates."
     resistance_risk = "High"
-
 elif selected_drug == "Linezolid":
     drug_class, threshold, tox_score, base_peak = "Oxazolidinone Class", 30, 5, 20.0
     food_adv = "CRITICAL ALERT: Strictly avoid tyramine-rich foods (aged cheese, soy sauce) to prevent hypertensive crisis."
@@ -122,7 +109,6 @@ elif selected_drug == "Linezolid":
     tox_desc = "Time-dependent bone marrow suppression leading to progressive thrombocytopenia if cycles cross 14 days."
     path_res = "Monitor tracking parameters closely for progressive optrA/cfr mutation clusters in MRSA stocks."
     resistance_risk = "Medium"
-
 else:
     drug_class, threshold, tox_score, base_peak = "Fluoroquinolone System", 30, 5, 5.0
     food_adv = "CRITICAL ALERT: Do not consume dairy assets or calcium supplements within 2 hours. Chelation failure risk."
@@ -140,7 +126,7 @@ if ward_type == "ICU (Intensive Care Unit)":
     st.markdown('<div class="card-info">ℹ️ ACUITY WARPING ALERT: Intensive Care status alters volume of distribution fields. Initial loading doses should be scaled dynamically.</div>', unsafe_allow_html=True)
 
 if "Decompensated Liver Cirrhosis" in comorbidities and selected_drug in ["Linezolid"]:
-    st.markdown('<div class="card-critical">🚨 HEPATIC METABOLISM FAILURE: Advanced cirrhosis detected. Clearances minimized; step down tracking frequencies.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="card-critical">🚨 HEPATIC METABOLISM FAILURE: Advanced cirrhosis detected. Clearances minimized; maintenance toxicity indexes augmented.</div>', unsafe_allow_html=True)
     tox_score += 1
 
 st.markdown(f'<div class="card-warning">🍏 DIETARY CROSSOVER SAFETY BARRIER: {food_adv}</div>', unsafe_allow_html=True)
