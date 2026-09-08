@@ -5,9 +5,9 @@ import io
 from datetime import datetime
 
 # ==============================================================================
-# PRECISION CDSS MASTER PRODUCTION MODEL v21.0 (PORTFOLIO PRO VERSION)
+# PRECISION CDSS MASTER PRODUCTION MODEL v22.0 (PORTFOLIO PRO VERSION - FIXED)
 # ==============================================================================
-st.set_page_config(page_title="Precision CDSS Pro v21.0", layout="wide")
+st.set_page_config(page_title="Precision CDSS Pro v22.0", layout="wide")
 
 # Custom Medical CSS Theme for High-Performance Clinical Dashboards
 st.markdown("""
@@ -23,7 +23,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="main-title">Translational Precision Antimicrobial Stewardship Framework Model</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title">Lead Investigator: MAYANK VIRMANI (PharmD, PV Scientist) | GitHub Portfolio Engine v21.0</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">Lead Investigator: MAYANK VIRMANI (PharmD, PV Scientist) | GitHub Portfolio Engine v22.0</div>', unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
 # 1. CLINICAL SIDEBAR COHORT MATRIX
@@ -148,6 +148,8 @@ st.markdown(f'<div class="card-warning">🍏 DIETARY CROSSOVER SAFETY BARRIER: {
 
 if "Warfarin" in concurrent_meds and selected_drug in ["Ciprofloxacin"]:
     st.markdown('<div class="card-critical">🚨 METABOLIC DDI INTERCEPT: Co-administration halts CYP2C9 tracking cycles. Major risk of internal bleeding. Check INR fields.</div>', unsafe_allow_html=True)
+
 if "SSRI Antidepressants" in concurrent_meds and selected_drug == "Linezolid":
     st.markdown('<div class="card-critical">🚨 TOXICOLOGICAL SHIELD BREAK: Linezolid acts as a selective MAOI asset. High risk of precipitating Serotonin Syndrome.</div>', unsafe_allow_html=True)
+
 if "Antacids / Calcium Supplements" in concurrent_meds and selected_drug == "Ciprofloxacin":
