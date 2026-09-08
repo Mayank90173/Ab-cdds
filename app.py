@@ -5,9 +5,9 @@ import io
 from datetime import datetime
 
 # ==============================================================================
-# PRECISION CDSS MASTER PRODUCTION MODEL v22.0 (PORTFOLIO PRO VERSION - FIXED)
+# PRECISION CDSS MASTER PRODUCTION MODEL v23.0 (PORTFOLIO PRO VERSION - ROBUST)
 # ==============================================================================
-st.set_page_config(page_title="Precision CDSS Pro v22.0", layout="wide")
+st.set_page_config(page_title="Precision CDSS Pro v23.0", layout="wide")
 
 # Custom Medical CSS Theme for High-Performance Clinical Dashboards
 st.markdown("""
@@ -23,7 +23,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="main-title">Translational Precision Antimicrobial Stewardship Framework Model</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title">Lead Investigator: MAYANK VIRMANI (PharmD, PV Scientist) | GitHub Portfolio Engine v22.0</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">Lead Investigator: MAYANK VIRMANI (PharmD, PV Scientist) | GitHub Portfolio Engine v23.0</div>', unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
 # 1. CLINICAL SIDEBAR COHORT MATRIX
@@ -80,7 +80,6 @@ drug_list = ["Ceftazidime-Avibactam", "Meropenem", "Amikacin", "Vancomycin", "Li
 st.markdown('<div class="section-header">🔍 Live Clinical Drug Decision Matrix</div>', unsafe_allow_html=True)
 selected_drug = st.selectbox("Select Target Antimicrobial Agent for Evaluation:", drug_list)
 
-# Initializing data values statically
 threshold, tox_score, base_peak = 50, 4, 50.0
 drug_class, food_adv, advisory, tox_desc, path_res, resistance_risk = "", "", "", "", "", "Low"
 
