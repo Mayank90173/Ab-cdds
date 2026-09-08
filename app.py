@@ -5,9 +5,9 @@ import io
 from datetime import datetime
 
 # ==============================================================================
-# PRECISION CDSS MASTER PRODUCTION MODEL v24.0 (GITHUB PRODUCTION LIVE ENGINE)
+# PRECISION CDSS MASTER PRODUCTION MODEL v25.0 (GITHUB FLAT LINE ENGINE)
 # ==============================================================================
-st.set_page_config(page_title="Precision CDSS Pro v24.0", layout="wide")
+st.set_page_config(page_title="Precision CDSS Pro v25.0", layout="wide")
 
 # Custom Medical CSS Theme for High-Performance Clinical Dashboards
 st.markdown("""
@@ -23,7 +23,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="main-title">Translational Precision Antimicrobial Stewardship Framework Model</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title">Lead Investigator: MAYANK VIRMANI (PharmD, PV Scientist) | GitHub Production Engine v24.0</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">Lead Investigator: MAYANK VIRMANI (PharmD, PV Scientist) | GitHub Flat Live Engine v25.0</div>', unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
 # 1. CLINICAL SIDEBAR COHORT MATRIX
@@ -118,23 +118,20 @@ else:
     resistance_risk = "Critical"
 
 # ------------------------------------------------------------------------------
-# 3. HIGH-ACUITY STEWARDSHIP CLOUD INTERCEPTS
+# 3. BULLET-PROOF FLAT STEWARDSHIP INTERCEPT ENGINES
 # ------------------------------------------------------------------------------
 st.markdown("### 🛑 Multi-Layer Stewardship Intercept Shields")
 
-if ward_type == "ICU (Intensive Care Unit)":
-    st.markdown('<div class="card-info">ℹ️ ACUITY WARPING ALERT: Intensive Care status alters volume of distribution fields. Initial loading doses should be scaled dynamically.</div>', unsafe_allow_html=True)
+# Flat verification lists with absolutely zero indentation dependency boundaries
+if ward_type == "ICU (Intensive Care Unit)": st.markdown('<div class="card-info">ℹ️ ACUITY WARPING ALERT: Intensive Care status alters volume of distribution fields. Initial loading doses should be scaled dynamically.</div>', unsafe_allow_html=True)
 
-if "Decompensated Liver Cirrhosis" in comorbidities and selected_drug in ["Linezolid"]:
+if ("Decompensated Liver Cirrhosis" in comorbidities) and (selected_drug == "Linezolid"):
     st.markdown('<div class="card-critical">🚨 HEPATIC METABOLISM FAILURE: Advanced cirrhosis detected. Clearances minimized; maintenance toxicity indexes augmented.</div>', unsafe_allow_html=True)
     tox_score += 1
 
 st.markdown(f'<div class="card-warning">🍏 DIETARY CROSSOVER SAFETY BARRIER: {food_adv}</div>', unsafe_allow_html=True)
 
-if "Warfarin" in concurrent_meds and selected_drug in ["Ciprofloxacin"]:
-    st.markdown('<div class="card-critical">🚨 METABOLIC DDI INTERCEPT: Co-administration halts CYP2C9 tracking cycles. Major risk of internal bleeding. Check INR fields.</div>', unsafe_allow_html=True)
+if ("Warfarin" in concurrent_meds) and (selected_drug == "Ciprofloxacin"): st.markdown('<div class="card-critical">🚨 METABOLIC DDI INTERCEPT: Co-administration halts CYP2C9 tracking cycles. Major risk of internal bleeding. Check INR fields.</div>', unsafe_allow_html=True)
 
-if "SSRI Antidepressants" in concurrent_meds and selected_drug == "Linezolid":
-    st.markdown('<div class="card-critical">🚨 TOXICOLOGICAL SHIELD BREAK: Linezolid acts as a selective MAOI asset. High risk of precipitating Serotonin Syndrome.</div>', unsafe_allow_html=True)
+if ("SSRI Antidepressants" in concurrent_meds) and (selected_drug == "Linezolid"): st.markdown('<div class="card-critical">🚨 TOXICOLOGICAL SHIELD BREAK: Linezolid acts as a selective MAOI asset. High risk of precipitating Serotonin Syndrome.</div>', unsafe_allow_html=True)
 
-if "Antacids / Calcium Supplements" in concurrent_meds and selected_drug == "Ciprofloxacin":
